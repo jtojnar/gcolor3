@@ -10,7 +10,7 @@ The only dependency required to build and run Gcolor3, is GTK3.
 
 Once the ridiculous amount of dependencies are installed, just run these commands to build and install Gcolor3:
 
-	$ ./autogen
+	$ ./autogen.sh
     $ make
     # make clean install
 
