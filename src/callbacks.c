@@ -26,8 +26,8 @@
 #include "callbacks.h"
 #include "ui.h"
 
-gchar *hex_value (GdkColor colorvalue) {
-	return g_strdup_printf ("#%.2X%.2X%.2X", colorvalue.red/256, colorvalue.green/256, colorvalue.blue/256);
+gchar *hex_value (GdkRGBA colorvalue) {
+	return g_strdup_printf ("#%.2X%.2X%.2X", (gint) (colorvalue.red*255), (gint) (colorvalue.green*255), (gint) (colorvalue.blue*255));
 }
 
 gboolean save_selected_color (gchar *file) {
@@ -60,7 +60,7 @@ gboolean save_selected_color (gchar *file) {
 		show_file_error (file, _("write"));
 		return FALSE;
 	} else {
-		g_fprintf (fp, "%3d %3d %3d\t\t%s\n%s", colorvalue.red/256, colorvalue.green/256, colorvalue.blue/256, colorname, old);
+		g_fprintf (fp, "%3d %3d %3d\t\t%s\n%s", (gint) (colorvalue.red*255), (gint) (colorvalue.green*255), (gint) (colorvalue.blue*255), colorname, old);
 		fclose (fp);
 		return TRUE;
 	}
@@ -191,8 +191,8 @@ void add_list_color (gchar *spec, gboolean is_new_color) {
 		gtk_tree_selection_select_iter (gtk_tree_view_get_selection (GTK_TREE_VIEW (tree)), &iter);
 }
 
-void on_colorselection_color_changed (void) {
-	gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (color_chooser), &colorvalue);
+void on_colorchooser_color_activated (void) {
+	gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (color_chooser), &colorvalue);
 }
 
 void on_save_entry_changed (void) {
@@ -206,18 +206,18 @@ void on_save_entry_changed (void) {
 }
 
 void on_list_selection_changed (void) {
-	GdkColor new_color, curr_color;
+	GdkRGBA new_color, curr_color;
 	GtkTreeModel *model;
 	gchar *color;
 
 	if (gtk_tree_selection_get_selected (selection, &model, &selection_iter)) {
 		gtk_tree_model_get (model, &selection_iter, COLOR_VALUE, &color, -1);
-		gdk_color_parse (color, &new_color);
+		gdk_rgba_parse (&new_color, color);
 
 		/* save the old color in color wheel */
-		gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (color_chooser), &curr_color);
-		gtk_color_selection_set_previous_color (GTK_COLOR_SELECTION (color_chooser), &curr_color);
-		gtk_color_selection_set_current_color (GTK_COLOR_SELECTION (color_chooser), &new_color);
+		gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (color_chooser), &curr_color);
+		// gtk_color_chooser_set_previous_rgba (GTK_COLOR_CHOOSER (color_chooser), &curr_color);
+		gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (color_chooser), &new_color);
 		g_free (color);
 
 		gtk_widget_set_sensitive (button_save, TRUE);
@@ -269,6 +269,7 @@ void open_save_dialog (void) {
 	save_dialog = save_dialog_open ();
 	gtk_window_set_transient_for (GTK_WINDOW (save_dialog), GTK_WINDOW (window));
 
+	gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (color_chooser), &colorvalue);
 	labeltext = g_strdup_printf (_("Enter a color name for %s:"), hex_value (colorvalue));
 	gtk_label_set_markup (GTK_LABEL (save_label), labeltext);
 	g_free(labeltext);

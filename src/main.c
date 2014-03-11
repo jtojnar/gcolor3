@@ -34,7 +34,7 @@ int main (void) {
 #endif
 
 	gtk_init (NULL, NULL);
-	colorvalue.red = colorvalue.green = colorvalue.blue = 65535;
+	colorvalue.red = colorvalue.green = colorvalue.blue = 1.0;
 
 	window = create_window ();
 	gtk_widget_show_all (window);

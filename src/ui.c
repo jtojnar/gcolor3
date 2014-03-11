@@ -144,7 +144,8 @@ GtkWidget *create_window (void) {
 	gtk_stack_switcher_set_stack (GTK_STACK_SWITCHER (stackswitcher), GTK_STACK (stack));
 
 	box_color_chooser = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
-	color_chooser = gtk_color_selection_new ();
+	color_chooser = gtk_color_chooser_widget_new ();
+	g_object_set (GTK_WIDGET (color_chooser), "show-editor", TRUE, "use-alpha", FALSE, NULL);
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_set_vexpand (scroll, TRUE);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -191,7 +192,7 @@ GtkWidget *create_window (void) {
 
 	g_signal_connect (selection, "changed", G_CALLBACK (on_list_selection_changed), NULL);
 	g_signal_connect (stack, "notify::visible-child", G_CALLBACK (on_stack_page_change), NULL);
-	g_signal_connect (color_chooser, "color-changed", G_CALLBACK (on_colorselection_color_changed), NULL);
+	g_signal_connect (color_chooser, "color-activated", G_CALLBACK (on_colorchooser_color_activated), NULL);
 	g_signal_connect (button_save, "clicked", G_CALLBACK (on_sd_button_clicked), NULL);
 	g_signal_connect (button_about, "clicked", G_CALLBACK (about_dialog_open), NULL);
 

@@ -24,13 +24,13 @@ GtkTreeIter selection_iter, iter;
 
 G_BEGIN_DECLS
 
-gchar *hex_value (GdkColor colorvalue);
+gchar *hex_value (GdkRGBA colorvalue);
 gboolean save_selected_color (gchar *file);
 gboolean delete_color (gchar *file, gchar *color_name, gchar *color_value);
 void add_rgb_file (gchar *file);
 void add_color_to_treeview (void);
 void add_list_color (gchar *spec, gboolean is_new_color);
-void on_colorselection_color_changed (void);
+void on_colorchooser_color_activated (void);
 void on_save_entry_changed (void);
 void on_list_selection_changed (void);
 void on_stack_page_change (void);
